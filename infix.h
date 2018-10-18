@@ -10,7 +10,8 @@ class infix{
 
   int getPrec(char op);
   double operate(int val1, int val2, char op);
-
+bool isDigit(char c);
+bool isOp(char c);
  public:
   
   infix() default;
