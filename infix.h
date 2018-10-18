@@ -3,10 +3,13 @@
 
 #include<string>
 
+#include"LinkedStack.h"
+#include"DividByZero.h"
+
 class infix{
  private:
   
-  std::string express("");
+  std::string express = "";
 
   int getPrec(char op);
   double operate(int val1, int val2, char op);
@@ -14,13 +17,13 @@ bool isDigit(char c);
 bool isOp(char c);
  public:
   
-  infix() default;
-  ~infix() default;
+  infix() = default;
+  ~infix() = default;
   
-  void SetExpress(const std::string&);
-  std::string GetExpress();
+  void setExpress(const std::string&);
+  std::string getExpress();
 
-  double evaluate();
+  double eval();
 };
 
 #endif

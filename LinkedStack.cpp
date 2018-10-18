@@ -21,6 +21,7 @@
 #include <new>
 
 #include <cassert>
+#include "Node.h"
 
 template <typename ItemType>
 LinkedStack<ItemType>::LinkedStack(const LinkedStack<ItemType>& aStack) {

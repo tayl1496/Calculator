@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "DividByZeroExcep.h"
+#include "DividByZero.h"
 
-DividByZeroExcep::DividByZeroExcep()
-  : std::overflow_error("Infinite result - Cannot handle division-by-zero.") {
+DividByZeroExcep::DividByZeroExcep(const std::string& message)
+  : std::overflow_error(message) {
 }

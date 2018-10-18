@@ -2,9 +2,9 @@
 #include<string>
 
 #include"infix.h"
-#include"LinkedStack.h"
 
-void infix::setExpress(std::string c){
+
+void infix::setExpress(const std::string& c){
   express = c;
 }
 
@@ -12,27 +12,27 @@ std::string infix::getExpress(){
   return express;
 }
 
-bool isDigit(char c){
-  return ('0' <= c <= '9')
+bool infix::isDigit(char c){
+  return (c >= '0' && c <= '9');
 }
 
-bool isOp(char c){
+bool infix::isOp(char c){
   return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')');
 }
 
 int infix::getPrec(char op){
   int prec;
   switch(op){
-  case: '+'
-  case: '-'
+  case '+':
+  case '-':
       prec = 1;
     break;
-  case: '*'
-  case: '/'
+  case '*':
+  case '/':
       prec = 2;
     break;
-  case: '('
-  case: ')'
+  case '(':
+  case ')':
       prec = 3;
     break;
   default:
@@ -57,6 +57,8 @@ double val = 0;
 	throw DividByZeroExcep(message);
     }
     val = (val1 / val2);
+    } catch (const DividByZeroExcep&) {
+      throw;
     }
   }
   return val;
@@ -68,13 +70,13 @@ double infix::eval(){
     LinkedStack<char> OpStack;
     
     double num = 0;
-    double preval, prev;
+    double prev;
 
     int pos = 0;
 
     char prevop, local;
 
-    while (pos < express.length()) {
+while (pos < (int)express.length()) {
 	local = express[pos];
 	if (isDigit(local)){
 	    num = (num * 10) + (local - '0');
@@ -104,7 +106,7 @@ double infix::eval(){
 		    OpStack.push(local);
 		    num = 0;
 		  } else {
-		    prevval = NumStack.pop();
+		    double prevval = NumStack.pop();
 		    prevop = OpStack.pop();
 		    prevval = operate(prevval, num, prevop);
 		    NumStack.push(prevval);

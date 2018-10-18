@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 
+#include"infix.h"
 #include"LinkedStack.h"
 #include"DividByZero.h"
 
