@@ -1,5 +1,4 @@
 
-#include<sstream>
 #include<string>
 
 #include"infix.h"
@@ -44,7 +43,7 @@ int infix::getPrec(char op){
 }
 
 double infix::operate(int val1, int val2, char op){
-  double val(0);
+double val = 0;
   if (op == '+') {
     val = (val1 + val2);
   } else if (op == '-') {
@@ -68,10 +67,10 @@ double infix::eval(){
     LinkedStack<double> NumStack;
     LinkedStack<char> OpStack;
     
-    double num(0);
+    double num = 0;
     double preval, prev;
 
-    int pos(0);
+    int pos = 0;
 
     char prevop, local;
 
