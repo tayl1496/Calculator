@@ -16,7 +16,7 @@
  *
  *  @version 7.0 */
 
-//#define NDEBUG
+#define NDEBUG
 
 #include <new>
 
@@ -89,12 +89,11 @@ template <typename ItemType>
 bool LinkedStack<ItemType>::pop() {
 
   bool canPop(!isEmpty() );
-
+  
   if (canPop) {
     NodePtr nodeToDeletePtr(topPtr);
 
-    topPtr = topPtr->getNext();
-
+    topPtr = topPtr->getNext();;
     delete nodeToDeletePtr;
   }
 

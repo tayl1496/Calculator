@@ -1,8 +1,13 @@
 
+#include<iostream>
 #include<string>
 
 #include"infix.h"
-
+#include"LinkedStack.h"
+#include"DividByZero.h"
+infix::infix(const std::string& e){
+  express = e;
+}
 
 void infix::setExpress(const std::string& c){
   express = c;
@@ -42,7 +47,7 @@ int infix::getPrec(char op){
   return prec;
 }
 
-double infix::operate(int val1, int val2, char op){
+double infix::operate(double val1, double val2, char op){
 double val = 0;
   if (op == '+') {
     val = (val1 + val2);
@@ -57,7 +62,7 @@ double val = 0;
 	throw DividByZeroExcep(message);
     }
     val = (val1 / val2);
-    } catch (const DividByZeroExcep&) {
+    } catch (const DividByZeroExcep& e){
       throw;
     }
   }
@@ -66,63 +71,70 @@ double val = 0;
 
 double infix::eval(){
 
-    LinkedStack<double> NumStack;
-    LinkedStack<char> OpStack;
+LinkedStack<double> NumStack;
+LinkedStack<char> OpStack;
     
-    double num = 0;
-    double prev;
+double num = 0;
+double prev;
 
-    int pos = 0;
+int pos = 0;
 
-    char prevop, local;
+char prevop, local;
 
 while (pos < (int)express.length()) {
-	local = express[pos];
-	if (isDigit(local)){
-	    num = (num * 10) + (local - '0');
-	  } else if (isOp(local)){
-	  if (local == '(') {
-		OpStack.push (local);
-		num = 0;
-	      } else if (NumStack.isEmpty()) {
-		NumStack.push(num);
-		OpStack.push(local);
-		num = 0;
-	      } else if (local == ')') {
-		NumStack.push(num);
-		while (OpStack.peek() != '(') {
-		    local = OpStack.pop();
-		    num = NumStack.pop();
-		    prev = NumStack.pop();
-		    num = operate(prev, num, local);
-		    NumStack.push(num);
-		  }
-		OpStack.pop();
-		NumStack.pop();
-	      } else {
-		prev = OpStack.peek();
-		if (getPrec(local) > getPrec(prev)) {
-		    NumStack.push(num);
-		    OpStack.push(local);
-		    num = 0;
-		  } else {
-		    double prevval = NumStack.pop();
-		    prevop = OpStack.pop();
-		    prevval = operate(prevval, num, prevop);
-		    NumStack.push(prevval);
-		    OpStack.push(local);
-		    num = 0;
-		  }
-	      }
-	  }
-	pos ++;
-      }
-
-    while (!OpStack.isEmpty()){
-	prev = NumStack.pop();
-	local = OpStack.pop();
-	num = operate(prev, num, local);
-
-      }
-    return num;
+  local = express[pos];
+  if (isDigit(local)) {
+    num = (num * 10) + (local - '0');
+  }
+  else if (isOp(local)) {
+    if(local=='('){
+      OpStack.push(local);
+      num = 0;
+    } else if (NumStack.isEmpty()) {
+	NumStack.push(num);
+	OpStack.push(local);
+	num = 0;
+    } else if (local==')'){
+       NumStack.push(num);
+       while (OpStack.peek() != '(') {
+	 local = OpStack.peek();
+	 OpStack.pop();
+	 num = NumStack.peek();
+	 NumStack.pop();
+	 prev = NumStack.peek();
+	 NumStack.pop();
+	 num = operate(prev, num, local);
+	 NumStack.push(num);
+       }
+       OpStack.pop();
+       NumStack.pop();
+    } else {
+	prevop = OpStack.peek();
+	if (getPrec(local) > getPrec(prev)) {
+	  NumStack.push(num);
+	  OpStack.push(local);
+	  num = 0;
+	} else {
+	  double prevval = NumStack.peek();
+	  prevop = OpStack.peek();
+	  NumStack.pop();
+	  OpStack.pop();
+	  prevval = operate(prevval, num, prevop);
+	  NumStack.push(prevval);
+	  OpStack.push(local);
+	  num = 0;
+	}
+    }
+  }
+    pos ++;
+ }
+  while (!OpStack.isEmpty()) {
+    prev = NumStack.peek();
+    local = OpStack.peek();
+    NumStack.pop();
+    OpStack.pop();
+    num = operate(prev, num, local);
+  }
+ 
+ return num;
 }
