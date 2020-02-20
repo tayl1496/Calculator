@@ -47,8 +47,8 @@ int infix::getPrec(char op){
   return prec;
 }
 
-double infix::operate(double val1, double val2, char op){
-double val = 0;
+int infix::operate(int val1, int val2, char op){
+int val = 0;
   if (op == '+') {
     val = (val1 + val2);
   } else if (op == '-') {
@@ -69,13 +69,13 @@ double val = 0;
   return val;
 }
 
-double infix::eval(){
+int infix::eval(){
 
-LinkedStack<double> NumStack;
+LinkedStack<int> NumStack;
 LinkedStack<char> OpStack;
     
-double num = 0;
-double prev;
+int num = 0;
+int prev;
 
 int pos = 0;
 
@@ -115,7 +115,7 @@ while (pos < (int)express.length()) {
 	  OpStack.push(local);
 	  num = 0;
 	} else {
-	  double prevval = NumStack.peek();
+	  int prevval = NumStack.peek();
 	  prevop = OpStack.peek();
 	  NumStack.pop();
 	  OpStack.pop();

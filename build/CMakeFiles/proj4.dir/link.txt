@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -std=c++14   CMakeFiles/proj4.dir/Main.cpp.o CMakeFiles/proj4.dir/infix.cpp.o CMakeFiles/proj4.dir/DividByZero.cpp.o  -o proj4 -rdynamic 

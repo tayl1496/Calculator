@@ -1,0 +1,725 @@
+Script started on Tue 23 Oct 2018 11:11:19 AM CDT
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% pwd
+/home/csugrads/tayl1496/cs1521/projects/project4/src
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% l[K[4makka[24m:[1m~/cs1521/projects/project4/src[0m% ls -l
+total 68
+drwx------ 3 tayl1496 student 4096 Oct 23 11:05 build
+-rw------- 1 tayl1496 student  137 Oct 17 14:24 #CMakeLists.txt#
+-rw------- 1 tayl1496 student  137 Oct 18 12:34 CMakeLists.txt
+-rw------- 1 tayl1496 student   40 Oct 14 17:36 CMakeLists.txt~
+-rw------- 1 tayl1496 student  470 Oct 18 12:04 DividByZero.cpp
+-rw------- 1 tayl1496 student  475 Oct 14 17:54 DividByZero.cpp~
+-rw------- 1 tayl1496 student  732 Oct 14 17:56 DividByZero.h
+-rw------- 1 tayl1496 student 2549 Oct 23 10:38 infix.cpp
+-rw------- 1 tayl1496 student   78 Oct 18 10:39 infix.cpp~
+-rw------- 1 tayl1496 student  404 Oct 23 10:39 infix.h
+-rw------- 1 tayl1496 student  268 Oct 17 14:36 infix.h~
+-rw------- 1 tayl1496 student 1875 Oct 22 14:50 LinkedStack.cpp
+-rw------- 1 tayl1496 student  944 Oct 22 14:50 LinkedStack.h
+-rw------- 1 tayl1496 student  458 Oct 23 11:05 Main.cpp
+-rw------- 1 tayl1496 student  876 Oct 18 12:37 Node.cpp
+-rw------- 1 tayl1496 student  759 Oct 14 17:43 Node.h
+-rw------- 1 tayl1496 student 1496 Oct 14 17:44 StackInterface.h
+-rw------- 1 tayl1496 student    0 Oct 23 11:11 typescript
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n CM
+CMakeLists.txt~  CMakeLists.txt   
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n CMakeLists.txt
+     1	project(Project_4)
+     2	
+     3	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14")
+     4	
+     5	add_executable(proj4 Main.cpp infix.cpp DividByZero.cpp)
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n Main.cpp
+     1	
+     2	#include<iostream>
+     3	#include<string>
+     4	
+     5	#include"infix.h"
+     6	#include"LinkedStack.h"
+     7	#include"DividByZero.h"
+     8	
+     9	int main(){
+    10	  std::string s;
+    11	  infix Expression;
+    12	  while( std::getline(std::cin, s) ){
+    13	    try{
+    14	      Expression.setExpress(s);
+    15	    std::cout<<Expression.getExpress() <<" = " <<Expression.eval();
+    16	    } catch (const DividByZeroExcep& e) {
+    17	      std::cerr<<Expression.getExpress() <<" = " <<e.what();
+    18	    }
+    19	    std::cout<<std::endl;    
+    20	  }
+    21	  return 0;
+    22	}
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -nn StackInterface.h
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  StackInterface class template definition.
+     7	 *
+     8	 *  Adapted from page 197 in Carrano 7e.
+     9	 *
+    10	 *  @author Frank M. Carrano
+    11	 *  @author Timothy Henry
+    12	 *  @author Steve Holtz
+    13	 *
+    14	 *  @date 17 Sep 2018
+    15	 *
+    16	 *  @version 7.0 */
+    17	
+    18	#ifndef STACK_INTERFACE_
+    19	#define STACK_INTERFACE_
+    20	
+    21	/** @class StackInterface StackInterface.h "StackInterface.h"
+    22	 *
+    23	 *  Definition of StackInterface class template. */
+    24	template <typename ItemType>
+    25	class StackInterface {
+    26	 public:
+    27	  /** Virtual destructor. */
+    28	  virtual ~StackInterface() = default;
+    29	
+    30	  /** Sees whether this stack is empty.
+    31	   *
+    32	   *  @return True if the stack is empty, or false. */
+    33	  virtual bool isEmpty() const = 0;
+    34	
+    35	  /** Adds a new entry to the top of this stack.
+    36	   *
+    37	   *  @post If successful, newEntry is stored at the top of this
+    38	   *        stack.
+    39	   *
+    40	   *  @param newEntry The object to be added as a new entry.
+    41	   *
+    42	   *  @return True if addition was successful, or false. */
+    43	  virtual bool push(const ItemType& newEntry) = 0;
+    44	
+    45	  /** Removes the top of this stack.
+    46	   *
+    47	   *  @post If successful, the top of this stack has been removed.
+    48	   *
+    49	   *  @return True if removal was successful, or false. */
+    50	  virtual bool pop() = 0;
+    51	
+    52	  /** Retrieves the top of this stack.
+    53	   *
+    54	   *  @pre This stack is not empty.
+    55	   *
+    56	   *  @post None.
+    57	   *
+    58	   *  @return The top of this stack.
+    59	   *
+    60	   *  @throws PrecondViolatedExcep If the precondition is violated. */
+    61	  virtual ItemType peek() const = 0;
+    62	};
+    63	
+    64	#endif
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n LinkedStack.h
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Header file for a pointer-based implementation of the ADT stack.
+     7	 *
+     8	 *  Adapted from page 246 in Carrano 7e.
+     9	 *
+    10	 *  @author Frank M. Carrano
+    11	 *  @author Timothy Henry
+    12	 *  @author Steve Holtz
+    13	 *
+    14	 *  @date 26 Sep 2018
+    15	 *
+    16	 *  @version 7.0 */
+    17	
+    18	#ifndef LINKED_STACK_
+    19	#define LINKED_STACK_
+    20	
+    21	#include "StackInterface.h"
+    22	#include "Node.h"
+    23	
+    24	/** @class LinkedStack LinkedStack.h "LinkedStack.h"
+    25	 *
+    26	 *  Specification of a pointer-based ADT stack. */
+    27	template <typename ItemType>
+    28	class LinkedStack : public StackInterface<ItemType> {
+    29	 private:
+    30	  using NodePtr = Node<ItemType>*;
+    31	
+    32	  NodePtr topPtr = nullptr;
+    33	
+    34	 public:
+    35	  LinkedStack() = default;
+    36	
+    37	  LinkedStack(const LinkedStack<ItemType>& aStack);
+    38	
+    39	  virtual ~LinkedStack();
+    40	
+    41	  virtual bool isEmpty() const;
+    42	
+    43	  virtual bool push(const ItemType& newEntry);
+    44	
+    45	  virtual bool pop();
+    46	
+    47	  virtual ItemType peek() const;
+    48	};
+    49	
+    50	#include "LinkedStack.cpp"
+    51	
+    52	#endif
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n LinkedStack.h[Kcpp
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Implementation file for a pointer-based implementation of the ADT
+     7	 *  stack.
+     8	 *
+     9	 *  Adapted from pages 246-8 in Carrano 7e.
+    10	 *
+    11	 *  @author Frank M. Carrano
+    12	 *  @author Timothy Henry
+    13	 *  @author Steve Holtz
+    14	 *
+    15	 *  @date 26 Sep 2018
+    16	 *
+    17	 *  @version 7.0 */
+    18	
+    19	#define NDEBUG
+    20	
+    21	#include <new>
+    22	
+    23	#include <cassert>
+    24	#include "Node.h"
+    25	
+    26	template <typename ItemType>
+    27	LinkedStack<ItemType>::LinkedStack(const LinkedStack<ItemType>& aStack) {
+    28	
+    29	  if (!aStack.topPtr) {
+    30	    topPtr = nullptr;
+    31	  }
+    32	  else {
+    33	    NodePtr origChainPtr(aStack.topPtr);
+    34	
+    35	    try {
+    36	      topPtr = new Node<ItemType>(origChainPtr->getItem() );
+    37	
+    38	      NodePtr newChainPtr(topPtr);
+    39	
+    40	      origChainPtr = origChainPtr->getNext();
+    41	
+    42	      while (origChainPtr) {
+    43		newChainPtr->setNext(new Node<ItemType>(origChainPtr->getItem()) );
+    44	
+    45		newChainPtr = newChainPtr->getNext();
+    46		origChainPtr = origChainPtr->getNext();
+    47	      }
+    48	    }
+    49	    catch (const std::bad_alloc&) {
+    50	      while (!isEmpty() ) {
+    51		pop();
+    52	      }
+    53	      throw;
+    54	    }
+    55	  }
+    56	}
+    57	
+    58	template <typename ItemType>
+    59	LinkedStack<ItemType>::~LinkedStack() {
+    60	
+    61	  while (!isEmpty() ) {
+    62	    pop();
+    63	  }
+    64	}
+    65	
+    66	template <typename ItemType>
+    67	bool LinkedStack<ItemType>::isEmpty() const {
+    68	
+    69	  return !topPtr;
+    70	}
+    71	
+    72	template <typename ItemType>
+    73	bool LinkedStack<ItemType>::push(const ItemType& newItem) {
+    74	
+    75	  bool canPush(true);
+    76	
+    77	  try {
+    78	    topPtr = new Node<ItemType>(newItem,
+    79					topPtr);
+    80	  }
+    81	  catch (const std::bad_alloc&) {
+    82	    canPush = false;
+    83	  }
+    84	
+    85	  return canPush;
+    86	}
+    87	
+    88	template <typename ItemType>
+    89	bool LinkedStack<ItemType>::pop() {
+    90	
+    91	  bool canPop(!isEmpty() );
+    92	  
+    93	  if (canPop) {
+    94	    NodePtr nodeToDeletePtr(topPtr);
+    95	
+    96	    topPtr = topPtr->getNext();;
+    97	    delete nodeToDeletePtr;
+    98	  }
+    99	
+   100	  return canPop;
+   101	}
+   102	
+   103	template <typename ItemType>
+   104	ItemType LinkedStack<ItemType>::peek() const {
+   105	
+   106	  assert(!isEmpty() );
+   107	
+   108	  return topPtr->getItem();
+   109	}
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n Node.h
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Header file for a node in the linked implementation of the ADT
+     7	 *  bag.
+     8	 *
+     9	 *  Adapted from pages 136-137 in Carrano 7e.
+    10	 *
+    11	 *  @author Frank M. Carrano
+    12	 *  @author Timothy Henry
+    13	 *  @author Steve Holtz
+    14	 *
+    15	 *  @date 10 Sep 2018
+    16	 *
+    17	 *  @version 7.0 */
+    18	
+    19	#ifndef NODE_
+    20	#define NODE_
+    21	
+    22	template <typename ItemType>
+    23	class Node {
+    24	 private:
+    25	  ItemType item;
+    26	  Node<ItemType>* next = nullptr;
+    27	
+    28	 public:
+    29	  Node() = default;
+    30	
+    31	  Node(const ItemType& anItem,
+    32	       Node<ItemType>* nextNodePtr = nullptr);
+    33	
+    34	  virtual ~Node() = default;
+    35	
+    36	  void setItem(const ItemType& anItem);
+    37	  void setNext(Node<ItemType>* nextNodePtr);
+    38	
+    39	  ItemType getItem() const;
+    40	  Node<ItemType>* getNext() const;
+    41	};
+    42	
+    43	#include "Node.cpp"
+    44	
+    45	#endif
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n Node.h[Kcpp
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Implementation file for a node in the linked implementation of the
+     7	 *  ADT bag.
+     8	 *
+     9	 *  Adapted from page 137 in Carrano 7e.
+    10	 *
+    11	 *  @author Frank M. Carrano
+    12	 *  @author Timothy Henry
+    13	 *  @author Steve Holtz
+    14	 *
+    15	 *  @date 10 Sep 2018
+    16	 *
+    17	 *  @version 7.0 */
+    18	
+    19	template <typename ItemType>
+    20	Node<ItemType>::Node(const ItemType& anItem,
+    21			     Node<ItemType>* nextNodePtr)
+    22	  : item(anItem),
+    23	    next(nextNodePtr) {
+    24	    }
+    25	
+    26	template <typename ItemType>
+    27	void Node<ItemType>::setItem(const ItemType& anItem) {
+    28	
+    29	  item = anItem;
+    30	}
+    31	
+    32	template <typename ItemType>
+    33	void Node<ItemType>::setNext(Node<ItemType>* nextNodePtr) {
+    34	
+    35	  next = nextNodePtr;
+    36	}
+    37	
+    38	template <typename ItemType>
+    39	ItemType Node<ItemType>::getItem() const {
+    40	
+    41	  return item;
+    42	}
+    43	
+    44	template <typename ItemType>
+    45	Node<ItemType>* Node<ItemType>::getNext() const {
+    46	
+    47	  return next;
+    48	}
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n [K[K[K[K[Kls
+build		  DividByZero.cpp   infix.cpp~	     LinkedStack.h  StackInterface.h
+#CMakeLists.txt#  DividByZero.cpp~  infix.h	     Main.cpp	    typescript
+CMakeLists.txt	  DividByZero.h     infix.h~	     Node.cpp
+CMakeLists.txt~   infix.cpp	    LinkedStack.cpp  Node.h
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% lscat -n Node.cpp[K[K[K[K[K[K[K[KDividByZero.h
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Header file for an object thrown on violation of precondition.
+     7	 *
+     8	 *  Adapted from page 250 in Carrano 7e.
+     9	 *
+    10	 *  @author Frank M. Carrano
+    11	 *  @author Timothy Henry
+    12	 *  @author Steve Holtz
+    13	 *
+    14	 *  @date 26 Sep 2018
+    15	 *
+    16	 *  @version 7.0 */
+    17	
+    18	#ifndef DIVID_BY_ZERO_EXCEP_
+    19	#define DIVID_BY_ZERO_EXCEP_
+    20	
+    21	#include <stdexcept>
+    22	#include <string>
+    23	
+    24	/** @class DividByZeroExcep DividByZeroExcep.h "DividByZeroExcep.h"
+    25	 *
+    26	 *  Specification for an object thrown on violation of precondition. */
+    27	class DividByZeroExcep : public std::overflow_error {
+    28	 public:
+    29	  explicit DividByZeroExcep(const std::string& message = "");
+    30	
+    31	  virtual ~DividByZeroExcep() noexcept = default; //throw();
+    32	};
+    33	
+    34	#endif
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n DividByZero.h[Kcpp
+     1	/** @file
+     2	 *
+     3	 *  @course CS1521
+     4	 *  @section 1
+     5	 *
+     6	 *  Implementation file for an object thrown on violation of
+     7	 *  precondition.
+     8	 *
+     9	 *  Adapted from page 250 in Carrano 7e.
+    10	 *
+    11	 *  @author Frank M. Carrano
+    12	 *  @author Timothy Henry
+    13	 *  @author Steve Holtz
+    14	 *
+    15	 *  @date 26 Sep 2018
+    16	 *
+    17	 *  @version 7.0 */
+    18	
+    19	#include <stdexcept>
+    20	#include <string>
+    21	
+    22	#include "DividByZero.h"
+    23	
+    24	DividByZeroExcep::DividByZeroExcep(const std::string& message)
+    25	  : std::overflow_error(message) {
+    26	}
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n inf
+infix.cpp~  infix.cpp   infix.h~    infix.h     
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n infix.h
+     1	#ifndef INFIX_EXPRESS_
+     2	#define INFIX_EXPRESS_
+     3	
+     4	#include<string>
+     5	
+     6	class infix{
+     7	 private:
+     8	  
+     9	  std::string express;
+    10	
+    11	  int getPrec(char op);
+    12	  int operate(int val1, int val2, char op);
+    13	bool isDigit(char c);
+    14	bool isOp(char c);
+    15	 public:
+    16	  
+    17	  infix() = default;
+    18	  ~infix() = default;
+    19	  infix(const std::string&);
+    20	  
+    21	  void setExpress(const std::string&);
+    22	  std::string getExpress();
+    23	
+    24	  int eval();
+    25	};
+    26	
+    27	#endif
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cat -n infix.h[Kcpp
+     1	
+     2	#include<iostream>
+     3	#include<string>
+     4	
+     5	#include"infix.h"
+     6	#include"LinkedStack.h"
+     7	#include"DividByZero.h"
+     8	infix::infix(const std::string& e){
+     9	  express = e;
+    10	}
+    11	
+    12	void infix::setExpress(const std::string& c){
+    13	  express = c;
+    14	}
+    15	
+    16	std::string infix::getExpress(){
+    17	  return express;
+    18	}
+    19	
+    20	bool infix::isDigit(char c){
+    21	  return (c >= '0' && c <= '9');
+    22	}
+    23	
+    24	bool infix::isOp(char c){
+    25	  return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')');
+    26	}
+    27	
+    28	int infix::getPrec(char op){
+    29	  int prec;
+    30	  switch(op){
+    31	  case '+':
+    32	  case '-':
+    33	      prec = 1;
+    34	    break;
+    35	  case '*':
+    36	  case '/':
+    37	      prec = 2;
+    38	    break;
+    39	  case '(':
+    40	  case ')':
+    41	      prec = 3;
+    42	    break;
+    43	  default:
+    44	    prec = -1;
+    45	    break;
+    46	  }
+    47	  return prec;
+    48	}
+    49	
+    50	int infix::operate(int val1, int val2, char op){
+    51	int val = 0;
+    52	  if (op == '+') {
+    53	    val = (val1 + val2);
+    54	  } else if (op == '-') {
+    55	    val = (val1 - val2);
+    56	  } else if (op == '*'){
+    57	    val = (val1 * val2);
+    58	  }else if (op == '/') {
+    59	    try{
+    60	    if(val2==0){
+    61	      std::string message = ("infinite result - Cannot handle division-by-zero.");
+    62		throw DividByZeroExcep(message);
+    63	    }
+    64	    val = (val1 / val2);
+    65	    } catch (const DividByZeroExcep& e){
+    66	      throw;
+    67	    }
+    68	  }
+    69	  return val;
+    70	}
+    71	
+    72	int infix::eval(){
+    73	
+    74	LinkedStack<int> NumStack;
+    75	LinkedStack<char> OpStack;
+    76	    
+    77	int num = 0;
+    78	int prev;
+    79	
+    80	int pos = 0;
+    81	
+    82	char prevop, local;
+    83	
+    84	while (pos < (int)express.length()) {
+    85	  local = express[pos];
+    86	  if (isDigit(local)) {
+    87	    num = (num * 10) + (local - '0');
+    88	  }
+    89	  else if (isOp(local)) {
+    90	    if(local=='('){
+    91	      OpStack.push(local);
+    92	      num = 0;
+    93	    } else if (NumStack.isEmpty()) {
+    94		NumStack.push(num);
+    95		OpStack.push(local);
+    96		num = 0;
+    97	    } else if (local==')'){
+    98	       NumStack.push(num);
+    99	       while (OpStack.peek() != '(') {
+   100		 local = OpStack.peek();
+   101		 OpStack.pop();
+   102		 num = NumStack.peek();
+   103		 NumStack.pop();
+   104		 prev = NumStack.peek();
+   105		 NumStack.pop();
+   106		 num = operate(prev, num, local);
+   107		 NumStack.push(num);
+   108	       }
+   109	       OpStack.pop();
+   110	       NumStack.pop();
+   111	    } else {
+   112		prevop = OpStack.peek();
+   113		if (getPrec(local) > getPrec(prev)) {
+   114		  NumStack.push(num);
+   115		  OpStack.push(local);
+   116		  num = 0;
+   117		} else {
+   118		  int prevval = NumStack.peek();
+   119		  prevop = OpStack.peek();
+   120		  NumStack.pop();
+   121		  OpStack.pop();
+   122		  prevval = operate(prevval, num, prevop);
+   123		  NumStack.push(prevval);
+   124		  OpStack.push(local);
+   125		  num = 0;
+   126		}
+   127	    }
+   128	  }
+   129	    pos ++;
+   130	 }
+   131	  while (!OpStack.isEmpty()) {
+   132	    prev = NumStack.peek();
+   133	    local = OpStack.peek();
+   134	    NumStack.pop();
+   135	    OpStack.pop();
+   136	    num = operate(prev, num, local);
+   137	  }
+   138	 
+   139	 return num;
+   140	}
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% git --no-pager log --no-color
+commit f0ad077c1a5e67a60f4895404f8df7345501b601
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Mon Oct 22 23:53:09 2018 -0500
+
+    Finalized Code that is working
+
+commit 84b0c0241ba40a762eab57c34a07d067b3d085aa
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Thu Oct 18 12:40:08 2018 -0500
+
+    finalized code w/o user input
+
+commit 53a72e30dc0c024adfd0aaf4664ad4d807bf490c
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Thu Oct 18 11:54:40 2018 -0500
+
+    Entry Before First Major Compile
+
+commit 5837edc664142cebd2eb7adc8a3023162b5157a6
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Thu Oct 18 11:39:55 2018 -0500
+
+    infix updates 2
+
+commit 64c8062daad959771e10824e336092e6b706ffc5
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Thu Oct 18 11:16:39 2018 -0500
+
+    infix updates
+
+commit 2b5902af5b31f50bffc2c86ac596273badb38431
+Author: Samuel Taylor <tayl1496@d.umn.edu>
+Date:   Sun Oct 14 18:06:22 2018 -0500
+
+    Initial Code
+[4makka[24m:[1m~/cs1521/projects/project4/src[0m% cd build/
+[4makka[24m:[1m~/cs1521/projects/project4/src/build[0m% make
+[35m[1mScanning dependencies of target proj4[0m
+[ 25%] [32mBuilding CXX object CMakeFiles/proj4.dir/Main.cpp.o[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/proj4.dir/infix.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/proj4.dir/DividByZero.cpp.o[0m
+[100%] [32m[1mLinking CXX executable proj4[0m
+[100%] Built target proj4
+[4makka[24m:[1m~/cs1521/projects/project4/src/build[0m% ./proj4 < test.dat
+6 + 7 = 13
+6 - 7 = -1
+6 * 7 = 42
+6 / 7 = 0
+6 + 7 + 2 = 15
+6 + 7 - 2 = 11
+6 + 7 * 2 = 20
+6 + 7 / 2 = 9
+6 - 7 + 2 = -3
+6 - 7 - 2 = 1
+6 - 7 * 2 = -8
+6 - 7 / 2 = 3
+6 * 7 + 2 = 54
+6 * 7 - 2 = 30
+6 * 7 * 2 = 84
+6 * 7 / 2 = 18
+6 / 7 + 2 = 0
+6 / 7 - 2 = 1
+6 / 7 * 2 = 0
+6 / 7 / 2 = 2
+6 + (7 + 2) = 15
+6 + (7 - 2) = 11
+6 + (7 * 2) = 20
+6 + (7 / 2) = 9
+6 - (7 + 2) = -3
+6 - (7 - 2) = 1
+6 - (7 * 2) = -8
+6 - (7 / 2) = 3
+6 * (7 + 2) = 54
+6 * (7 - 2) = 30
+6 * (7 * 2) = 84
+6 * (7 / 2) = 18
+6 / (7 + 2) = 0
+6 / (7 - 2) = 1
+6 / (7 * 2) = 0
+6 / (7 / 2) = 2
+(6 + 7) + 2 = 15
+(6 + 7) - 2 = 11
+(6 + 7) * 2 = 26
+(6 + 7) / 2 = 6
+(6 - 7) + 2 = 1
+(6 - 7) - 2 = -3
+(6 - 7) * 2 = -2
+(6 - 7) / 2 = 0
+(6 * 7) + 2 = 44
+(6 * 7) - 2 = 40
+(6 * 7) * 2 = 84
+(6 * 7) / 2 = 21
+(6 / 7) + 2 = 2
+(6 / 7) - 2 = -2
+(6 / 7) * 2 = 0
+(6 / 7) / 2 = 0
+(6 + (4 - 6)) = 4
+7 + 4 * (5 + 6 * (2 - 1) / 3 + (9 + 8 * (6 - 5)) / 6) + 6 = 51
+(((6 - 2) * (((9 - 3) * 7) / 6) * 3) / 6) + 5 = 19
+6 - (2 * (9 - (3 * (7 / 6) * 3 / 6 + 5))) = -12
+[4makka[24m:[1m~/cs1521/projects/project4/src/build[0m% ./proj4 <test[K[K[K[K tet[KstDivByZero.dat
+5 / 0 = infinite result - Cannot handle division-by-zero.
+5 / (7 - 7) = infinite result - Cannot handle division-by-zero.
+(5 + 7) / 0 = infinite result - Cannot handle division-by-zero.
+7 + 4 * (5 / 6 * (2 - 1) / (9 - 8 + (5 - 6)) - 6) + 6 = infinite result - Cannot handle division-by-zero.
+[4makka[24m:[1m~/cs1521/projects/project4/src/build[0m% exit
+exit
+
+Script done on Tue 23 Oct 2018 11:20:42 AM CDT

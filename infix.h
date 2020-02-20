@@ -9,7 +9,7 @@ class infix{
   std::string express;
 
   int getPrec(char op);
-  double operate(double val1, double val2, char op);
+  int operate(int val1, int val2, char op);
 bool isDigit(char c);
 bool isOp(char c);
  public:
@@ -21,7 +21,7 @@ bool isOp(char c);
   void setExpress(const std::string&);
   std::string getExpress();
 
-  double eval();
+  int eval();
 };
 
 #endif
